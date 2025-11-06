@@ -44,6 +44,23 @@ export const AssessmentResults = ({ data, claimData, onNewClaim }: AssessmentRes
         </p>
       </div>
 
+      {/* Uploaded Photos */}
+      {claimData.imageData && claimData.imageData.length > 0 && (
+        <div>
+          <h3 className="text-lg font-semibold text-foreground mb-3">Submitted Photos</h3>
+          <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
+            {claimData.imageData.map((image, index) => (
+              <img
+                key={index}
+                src={image}
+                alt={`Damage photo ${index + 1}`}
+                className="w-full h-40 object-cover rounded-lg shadow-md"
+              />
+            ))}
+          </div>
+        </div>
+      )}
+
       {/* Severity Card */}
       <Card className={`p-6 ${config.bgColor} border-0`}>
         <div className="flex items-center gap-3">

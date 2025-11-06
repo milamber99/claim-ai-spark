@@ -16,7 +16,7 @@ export interface ClaimData {
   policyNumber: string;
   incidentDate: string;
   description: string;
-  imageData?: string;
+  imageData?: string[];
 }
 
 export interface AssessmentData {
@@ -49,7 +49,7 @@ export const ClaimForm = ({ onBack }: ClaimFormProps) => {
     setCurrentStep("upload");
   };
 
-  const handleImageUploadComplete = (imageData: string, assessment: AssessmentData) => {
+  const handleImageUploadComplete = (imageData: string[], assessment: AssessmentData) => {
     setClaimData(prev => ({ ...prev, imageData }));
     setAssessmentData(assessment);
     setCurrentStep("results");
