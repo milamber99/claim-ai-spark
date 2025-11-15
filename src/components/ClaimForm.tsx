@@ -56,13 +56,7 @@ export const ClaimForm = ({ onBack }: ClaimFormProps) => {
   };
 
   const handleNewClaim = () => {
-    setCurrentStep("details");
-    setClaimData({
-      policyNumber: "",
-      incidentDate: "",
-      description: "",
-    });
-    setAssessmentData(null);
+    onBack();
   };
 
   return (
