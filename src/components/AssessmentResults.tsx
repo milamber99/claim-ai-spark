@@ -7,6 +7,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { CheckCircle2, AlertTriangle, XCircle, Pencil, X } from "lucide-react";
 import { AssessmentData, ClaimData } from "./ClaimForm";
+import { useToast } from "@/hooks/use-toast";
 interface AssessmentResultsProps {
   data: AssessmentData;
   claimData: ClaimData;
@@ -17,6 +18,7 @@ export const AssessmentResults = ({
   claimData,
   onNewClaim
 }: AssessmentResultsProps) => {
+  const { toast } = useToast();
   const [isEditing, setIsEditing] = useState(false);
   const [editedData, setEditedData] = useState<AssessmentData>(data);
   const [newDamageArea, setNewDamageArea] = useState("");
@@ -205,7 +207,18 @@ export const AssessmentResults = ({
 
       {/* Action Buttons */}
       <div className="flex gap-3 pt-4">
-        <Button onClick={onNewClaim} className="flex-1 bg-gradient-to-r from-primary to-secondary">Send to Adjuster</Button>
+        <Button 
+          onClick={() => {
+            toast({
+              title: "Claim Sent",
+              description: "Your claim has been sent to the adjuster for review.",
+            });
+            onNewClaim();
+          }} 
+          className="flex-1 bg-gradient-to-r from-primary to-secondary"
+        >
+          Send to Adjuster
+        </Button>
       </div>
 
       {/* Disclaimer */}
