@@ -12,11 +12,11 @@ interface ImageUploadProps {
 export const ImageUpload = ({ onComplete }: ImageUploadProps) => {
   const [selectedImages, setSelectedImages] = useState<string[]>([]);
   const [isAnalyzing, setIsAnalyzing] = useState(false);
+  const [isDragging, setIsDragging] = useState(false);
   const fileInputRef = useRef<HTMLInputElement>(null);
   const { toast } = useToast();
 
-  const handleFileSelect = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const files = Array.from(e.target.files || []);
+  const processFiles = (files: File[]) => {
     if (files.length === 0) return;
 
     const invalidFiles = files.filter(file => !file.type.startsWith("image/"));
@@ -42,6 +42,28 @@ export const ImageUpload = ({ onComplete }: ImageUploadProps) => {
     Promise.all(readers).then(images => {
       setSelectedImages(prev => [...prev, ...images]);
     });
+  };
+
+  const handleFileSelect = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const files = Array.from(e.target.files || []);
+    processFiles(files);
+  };
+
+  const handleDragOver = (e: React.DragEvent<HTMLDivElement>) => {
+    e.preventDefault();
+    setIsDragging(true);
+  };
+
+  const handleDragLeave = (e: React.DragEvent<HTMLDivElement>) => {
+    e.preventDefault();
+    setIsDragging(false);
+  };
+
+  const handleDrop = (e: React.DragEvent<HTMLDivElement>) => {
+    e.preventDefault();
+    setIsDragging(false);
+    const files = Array.from(e.dataTransfer.files);
+    processFiles(files);
   };
 
   const removeImage = (index: number) => {
@@ -102,8 +124,13 @@ export const ImageUpload = ({ onComplete }: ImageUploadProps) => {
       </div>
 
       <div
+        onDragOver={handleDragOver}
+        onDragLeave={handleDragLeave}
+        onDrop={handleDrop}
         className={`border-2 border-dashed rounded-xl p-8 text-center transition-colors ${
-          selectedImages.length > 0
+          isDragging
+            ? "border-primary bg-primary/10 scale-[1.02]"
+            : selectedImages.length > 0
             ? "border-primary bg-primary/5" 
             : "border-border hover:border-primary/50 bg-muted/30"
         }`}
@@ -159,10 +186,10 @@ export const ImageUpload = ({ onComplete }: ImageUploadProps) => {
             </div>
             <div>
               <p className="text-lg font-medium text-foreground mb-1">
-                Upload Vehicle Damage Photos
+                {isDragging ? "Drop photos here" : "Upload Vehicle Damage Photos"}
               </p>
               <p className="text-sm text-muted-foreground">
-                PNG, JPG or WEBP up to 10MB each (multiple photos allowed)
+                Drag & drop or click to upload • PNG, JPG or WEBP up to 10MB each
               </p>
             </div>
             <Button
